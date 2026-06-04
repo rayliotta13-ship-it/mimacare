@@ -111,6 +111,29 @@ export default function MimaCare() {
     }, 60000);
     return () => clearInterval(interval);
   }, []);
+  
+// ── TEMPS RÉEL SUPABASE ──────────────────────────────────
+  useEffect(() => {
+    const sub = storage.subscribeToPresences((newRow) => {
+      setPresent(storage.getPresences());
+    });
+    return () => sub.unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    const sub = storage.subscribeToGlycemie((newRow) => {
+      setGlyHistory(storage.getGlycemiaHistory());
+    });
+    return () => sub.unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    const sub = storage.subscribeToJournal((newRow) => {
+      setJournalNotes(storage.getNotes());
+    });
+    return () => sub.unsubscribe();
+  }, []);
+
 
   const localDatetimeToISOString = (localDatetime) => {
     const [date, time] = (localDatetime || "").split("T");
