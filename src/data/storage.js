@@ -144,6 +144,8 @@ export const subscribeToPresences = (callback) => {
       callback(payload.new);
     })
     .subscribe();
+};
+
 
 // ─── HISTORIQUE PASSAGES ────────────────────────────────────
 export const getPassagesHistory = () => {
