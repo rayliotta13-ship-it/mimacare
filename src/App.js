@@ -113,9 +113,12 @@ export default function MimaCare() {
   }, []);
 
 // ── TEMPS RÉEL SUPABASE ──────────────────────────────────
- useEffect(() => {
+useEffect(() => {
   const sub = storage.subscribeToPresences((presence) => {
-    setPresent(presence);
+    setPresent(p => {
+      if (p.prenom === presence.prenom && !presence.heureDepart && p.heureArrivee) return p;
+      return presence;
+    });
   });
   return () => sub.unsubscribe();
 }, []);
