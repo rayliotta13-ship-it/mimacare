@@ -111,14 +111,14 @@ export default function MimaCare() {
     }, 60000);
     return () => clearInterval(interval);
   }, []);
-  
+
 // ── TEMPS RÉEL SUPABASE ──────────────────────────────────
-  useEffect(() => {
-    const sub = storage.subscribeToPresences((newRow) => {
-      setPresent(storage.getPresences());
-    });
-    return () => sub.unsubscribe();
-  }, []);
+ useEffect(() => {
+  const sub = storage.subscribeToPresences((presence) => {
+    setPresent(presence);
+  });
+  return () => sub.unsubscribe();
+}, []);
 
   useEffect(() => {
     const sub = storage.subscribeToGlycemie((newRow) => {
