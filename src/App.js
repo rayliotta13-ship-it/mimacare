@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from "react";
-import { supabase } from './supabase'
 import { PresenceManager } from "./components/PresenceManager";
 import { MedicinesManager } from "./components/MedicinesManager";
 import { Modal } from "./components/Modal";
@@ -92,7 +91,6 @@ export default function MimaCare() {
     return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}T${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
   });
   const [accueilPhoto, setAccueilPhoto] = useState(() => storage.getAccueilPhoto());
-  const accueilPhotoInputRef = useRef(null);
 
   useEffect(() => {
     if (activeTab === "accueil") {
