@@ -550,7 +550,7 @@ useEffect(() => {
 
         <Modal isOpen={isGlyModalOpen} title="Ajouter une glycémie" onClose={() => setGlyModalOpen(false)} primaryAction={saveGlyEntry} primaryText="Enregistrer">
           <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-            <input type="text" value={glyInput} onChange={e => setGlyInput(e.target.value)} placeholder="Valeur (ex: 1,18)" style={{ padding: "12px", borderRadius: "10px", border: `1px solid ${BD}` }} />
+            <input type="text" value={glyInput} onChange={e => setGlyInput(e.target.value)} placeholder="Valeur (ex: 1,18)" style={{ padding: "12px", borderRadius: "10px", border: `1px solid ${BD}`, fontSize: "16px" }} />
             <input type="datetime-local" value={glyTime} onChange={e => setGlyTime(e.target.value)} style={{ padding: "10px", borderRadius: "10px", border: `1px solid ${BD}` }} />
           </div>
         </Modal>
@@ -632,30 +632,22 @@ useEffect(() => {
   };
 
   return (
-    <div style={{ fontFamily: "-apple-system, 'Helvetica Neue', sans-serif", background: "#E5E5EA", minHeight: "100vh", display: "flex", justifyContent: "center", alignItems: "center" }}>
-      <div style={{ width: "390px", height: "844px", background: BG, borderRadius: "50px", overflow: "hidden", display: "flex", flexDirection: "column", boxShadow: "0 40px 100px rgba(0,0,0,0.3)", flexShrink: 0 }}>
+    <div style={{ fontFamily: "-apple-system, 'Helvetica Neue', sans-serif", background: BG, minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+      <AppHeader onBell={() => setActiveTab("journal")} title={TAB_TITLES[activeTab]} />
 
-        <div style={{ background: W, padding: "10px 28px 4px", display: "flex", justifyContent: "space-between", flexShrink: 0 }}>
-          <span style={{ fontSize: "15px", fontWeight: "700", color: T }}>{statusTime}</span>
-          <span style={{ fontSize: "12px", color: T }}>● ● ▮</span>
-        </div>
+      <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column" }}>
+        {screens[activeTab]?.()}
+      </div>
 
-        <AppHeader onBell={() => setActiveTab("journal")} title={TAB_TITLES[activeTab]} />
-
-        <div style={{ flex: 1, overflowY: activeTab === "glycemie" ? "hidden" : "auto", display: "flex", flexDirection: "column" }}>
-          {screens[activeTab]?.()}
-        </div>
-
-        <div style={{ background: W, display: "flex", padding: "8px 0 20px", borderTop: `1px solid ${BD}`, flexShrink: 0, overflowX: "auto" }}>
-          {TABS.map(tab => (
-            <button key={tab.id} onClick={() => setActiveTab(tab.id)}
-              style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: "2px", border: "none", background: "none", cursor: "pointer", padding: "4px 1px", minWidth: "60px" }}>
-              <span style={{ fontSize: "18px", opacity: activeTab === tab.id ? 1 : 0.25 }}>{tab.emoji}</span>
-              <span style={{ fontSize: "9px", fontWeight: "700", color: activeTab === tab.id ? G : T2 }}>{tab.label}</span>
-            </button>
-          ))}
-        </div>
+      <div style={{ background: W, display: "flex", padding: "8px 0 20px", borderTop: `1px solid ${BD}`, flexShrink: 0 }}>
+        {TABS.map(tab => (
+          <button key={tab.id} onClick={() => setActiveTab(tab.id)}
+            style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: "2px", border: "none", background: "none", cursor: "pointer", padding: "8px 1px", minWidth: "60px" }}>
+            <span style={{ fontSize: "22px", opacity: activeTab === tab.id ? 1 : 0.25 }}>{tab.emoji}</span>
+            <span style={{ fontSize: "10px", fontWeight: "700", color: activeTab === tab.id ? G : T2 }}>{tab.label}</span>
+          </button>
+        ))}
       </div>
     </div>
-  );
+ );
 }
