@@ -114,6 +114,15 @@ useEffect(() => {
     return () => sub.unsubscribe();
   }, []);
 
+  useEffect(() => {
+  const sub = storage.subscribeToPresences(() => {
+    setTimeout(() => {
+      storage.fetchPresencesFromSupabase().then(setPresent);
+    }, 1000);
+  });
+  return () => sub.unsubscribe();
+}, []);
+
 
   const localDatetimeToISOString = (localDatetime) => {
     const [date, time] = (localDatetime || "").split("T");
