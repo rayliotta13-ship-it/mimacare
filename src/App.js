@@ -92,8 +92,7 @@ export default function MimaCare() {
   });
   const [accueilPhoto, setAccueilPhoto] = useState(() => storage.getAccueilPhoto());
 
- useEffect(() => {
-  storage.fetchPresencesFromSupabase().then(setPresent);
+useEffect(() => {
   storage.fetchGlycemieFromSupabase().then(setGlyHistory);
   storage.fetchJournalFromSupabase().then(setJournalNotes);
 }, []);
