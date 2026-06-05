@@ -94,9 +94,9 @@ export default function MimaCare() {
 
 useEffect(() => {
   storage.fetchPresencesFromSupabase().then(data => {
-    if (data.presentSoir) setPresentSoir(data.presentSoir);
-    setPresent(data);
-  });
+  if (data.presentSoir) setPresentSoir(data.presentSoir);
+  setPresent({ prenom: data.prenom, heureArrivee: data.heureArrivee, heureDepart: data.heureDepart });
+});
   storage.fetchGlycemieFromSupabase().then(setGlyHistory);
   storage.fetchJournalFromSupabase().then(setJournalNotes);
 }, []);
@@ -122,9 +122,9 @@ useEffect(() => {
   const sub = storage.subscribeToPresences(() => {
     setTimeout(() => {
       storage.fetchPresencesFromSupabase().then(data => {
-        if (data.presentSoir) setPresentSoir(data.presentSoir);
-        setPresent(data);
-      });
+  if (data.presentSoir) setPresentSoir(data.presentSoir);
+  setPresent({ prenom: data.prenom, heureArrivee: data.heureArrivee, heureDepart: data.heureDepart });
+});
     }, 1000);
   });
   return () => sub.unsubscribe();
