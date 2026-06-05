@@ -98,12 +98,6 @@ export default function MimaCare() {
   storage.fetchJournalFromSupabase().then(setJournalNotes);
 }, []);
 
-useEffect(() => {
-  if (activeTab === "accueil") {
-    storage.fetchPresencesFromSupabase().then(setPresent);
-  }
-}, [activeTab]);
-
 
 // ── TEMPS RÉEL SUPABASE ──────────────────────────────────
 useEffect(() => {
