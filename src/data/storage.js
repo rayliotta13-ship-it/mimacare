@@ -377,13 +377,17 @@ export const fetchPresencesFromSupabase = async () => {
     .from("presences")
     .select("*")
     .order("horodatage", { ascending: false })
-    .limit(1);
-  if (error || !data || data.length === 0) return getPresences();
-  const row = data[0];
+    .limit(20);
+  if (error || !data || data.length === 0) return { ...getPresences(), presentSoir: getPresentTonight() };
+  const presenceData = data.filter(r => r.action !== "soir");
+  const soirData = data.filter(r => r.action === "soir");
+  const derniere = presenceData[0];
+  const soir = soirData[0];
   return {
-    prenom: row.qui,
-    heureArrivee: row.action === "arrivee" ? new Date(row.horodatage).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }) : null,
-    heureDepart: row.action === "depart" ? new Date(row.horodatage).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }) : null,
+    prenom: derniere?.qui || null,
+    heureArrivee: derniere?.action === "arrivee" ? new Date(derniere.horodatage).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }) : null,
+    heureDepart: derniere?.action === "depart" ? new Date(derniere.horodatage).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }) : null,
+    presentSoir: soir?.qui || getPresentTonight(),
   };
 };
 
