@@ -99,15 +99,6 @@ useEffect(() => {
 
 
 // ── TEMPS RÉEL SUPABASE ──────────────────────────────────
-useEffect(() => {
-  const sub = storage.subscribeToPresences((presence) => {
-    setPresent(p => {
-      if (p.prenom === presence.prenom && !presence.heureDepart && p.heureArrivee) return p;
-      return presence;
-    });
-  });
-  return () => sub.unsubscribe();
-}, []);
 
   useEffect(() => {
     const sub = storage.subscribeToGlycemie((newRow) => {
