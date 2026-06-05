@@ -365,3 +365,49 @@ export const saveMedsChecked = (checked) => {
     checked,
   }));
 };
+
+// ─── LECTURE DEPUIS SUPABASE ─────────────────────────────
+export const fetchPresencesFromSupabase = async () => {
+  const { data, error } = await supabase
+    .from("presences")
+    .select("*")
+    .order("horodatage", { ascending: false })
+    .limit(1);
+  if (error || !data || data.length === 0) return getPresences();
+  const row = data[0];
+  return {
+    prenom: row.qui,
+    heureArrivee: row.action === "arrivee" ? new Date(row.horodatage).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }) : null,
+    heureDepart: row.action === "depart" ? new Date(row.horodatage).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }) : null,
+  };
+};
+
+export const fetchGlycemieFromSupabase = async () => {
+  const { data, error } = await supabase
+    .from("glycemie")
+    .select("*")
+    .order("created_at", { ascending: false })
+    .limit(20);
+  if (error || !data || data.length === 0) return getGlycemiaHistory();
+  return data.map(row => ({
+    date: row.created_at,
+    value_g_l: row.valeur,
+  }));
+};
+
+export const fetchJournalFromSupabase = async () => {
+  const { data, error } = await supabase
+    .from("journal")
+    .select("*")
+    .order("date_note", { ascending: false })
+    .limit(50);
+  if (error || !data || data.length === 0) return getNotes();
+  return data.map((row, i) => ({
+    id: row.id,
+    date: new Date(row.date_note).toLocaleDateString("fr-FR", { day: "numeric", month: "long" }),
+    time: new Date(row.date_note).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }),
+    texte: row.contenu,
+    auteur: row.auteur,
+    photos: [],
+  }));
+};

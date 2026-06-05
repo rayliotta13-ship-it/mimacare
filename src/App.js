@@ -92,12 +92,17 @@ export default function MimaCare() {
   });
   const [accueilPhoto, setAccueilPhoto] = useState(() => storage.getAccueilPhoto());
 
-  useEffect(() => {
-    if (activeTab === "accueil") {
-      setPresent(storage.getPresences());
-      setPresentSoir(storage.getPresentTonight());
-    }
-  }, [activeTab]);
+ useEffect(() => {
+  storage.fetchPresencesFromSupabase().then(setPresent);
+  storage.fetchGlycemieFromSupabase().then(setGlyHistory);
+  storage.fetchJournalFromSupabase().then(setJournalNotes);
+}, []);
+
+useEffect(() => {
+  if (activeTab === "accueil") {
+    storage.fetchPresencesFromSupabase().then(setPresent);
+  }
+}, [activeTab]);
 
 
 // ── TEMPS RÉEL SUPABASE ──────────────────────────────────
