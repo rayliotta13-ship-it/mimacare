@@ -118,10 +118,13 @@ useEffect(() => {
     return () => sub.unsubscribe();
   }, []);
 
-  useEffect(() => {
+useEffect(() => {
   const sub = storage.subscribeToPresences(() => {
     setTimeout(() => {
-      storage.fetchPresencesFromSupabase().then(setPresent);
+      storage.fetchPresencesFromSupabase().then(data => {
+        if (data.presentSoir) setPresentSoir(data.presentSoir);
+        setPresent(data);
+      });
     }, 1000);
   });
   return () => sub.unsubscribe();
