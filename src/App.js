@@ -99,18 +99,6 @@ export default function MimaCare() {
     }
   }, [activeTab]);
 
-  const [statusTime, setStatusTime] = useState(() => {
-    const now = new Date();
-    return `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
-  });
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const now = new Date();
-      setStatusTime(`${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`);
-    }, 60000);
-    return () => clearInterval(interval);
-  }, []);
 
 // ── TEMPS RÉEL SUPABASE ──────────────────────────────────
 useEffect(() => {
