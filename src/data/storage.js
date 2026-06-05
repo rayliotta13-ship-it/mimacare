@@ -188,6 +188,11 @@ export const getPresentTonight = () => {
 
 export const savePresentTonight = (prenom) => {
   localStorage.setItem(KEYS.presentTonight, JSON.stringify(prenom));
+  supabase.from("presences").insert([{
+    qui: prenom,
+    action: "soir",
+    horodatage: new Date().toISOString(),
+  }]).then(({ error }) => { if (error) console.warn("Supabase soir:", error.message); });
 };
 
 export const getEveningHistory = () => {
