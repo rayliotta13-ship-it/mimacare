@@ -4,6 +4,7 @@ import { MedicinesManager } from "./components/MedicinesManager";
 import { Modal } from "./components/Modal";
 import * as storage from "./data/storage";
 import { G, GL, GM, W, BG, T, T2, BD, RE, isFeminineName } from "./utils";
+import { SoirChecklist } from "./components/SoirChecklist";
 
 const MSGS = [
   "Tout est à jour aujourd'hui.",
@@ -18,6 +19,7 @@ const TABS = [
   { id: "journal", emoji: "📝", label: "Journal" },
   { id: "medicaments", emoji: "💊", label: "Médicaments" },
   { id: "presence", emoji: "👤", label: "Présence" },
+  { id: "soir", emoji: "🌙", label: "Soir" },
 ];
 
 const TAB_TITLES = {
@@ -26,6 +28,7 @@ const TAB_TITLES = {
   journal: "Journal",
   medicaments: "Médicaments",
   presence: "Présence",
+  soir: "Procédure du soir",
 };
 
 const AppHeader = ({ onBell, title }) => (
@@ -643,6 +646,7 @@ useEffect(() => {
     journal: renderJournal,
     medicaments: renderMedicaments,
     presence: () => <PresenceManager present={present} setPresent={setPresent} presentSoir={presentSoir} setPresentSoir={setPresentSoir} />,
+    soir: () => <SoirChecklist />,
   };
 
   return (
