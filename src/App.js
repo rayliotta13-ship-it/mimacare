@@ -39,7 +39,7 @@ const AppHeader = ({ onBell, title }) => (
       <img
         src={process.env.PUBLIC_URL + '/mimacare-logo.png'}
         alt="MimaCare"
-        style={{ height: "96px", width: "auto", objectFit: "contain", display: "block" }}
+        style={{ height: "60px", width: "auto", objectFit: "contain", display: "block" }}
       />
      
     </div>
