@@ -122,7 +122,6 @@ useEffect(() => {
   const sub = storage.subscribeToPresences(() => {
     setTimeout(() => {
       storage.fetchPresencesFromSupabase().then(data => {
-  if (data.presentSoir) setPresentSoir(data.presentSoir);
   setPresent({ prenom: data.prenom, heureArrivee: data.heureArrivee, heureDepart: data.heureDepart });
 });
     }, 1000);
