@@ -105,11 +105,13 @@ useEffect(() => {
 // ── TEMPS RÉEL SUPABASE ──────────────────────────────────
 
   useEffect(() => {
-    const sub = storage.subscribeToGlycemie((newRow) => {
-      setGlyHistory(storage.getGlycemiaHistory());
-    });
-    return () => sub.unsubscribe();
-  }, []);
+  const sub = storage.subscribeToGlycemie(() => {
+    setTimeout(() => {
+      storage.fetchGlycemieFromSupabase().then(setGlyHistory);
+    }, 1000);
+  });
+  return () => sub.unsubscribe();
+}, []);
 
   useEffect(() => {
     const sub = storage.subscribeToJournal((newRow) => {
