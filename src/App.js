@@ -343,7 +343,7 @@ useEffect(() => {
           ) : latestPhotoSrc ? (
             <img src={latestPhotoSrc} alt="Moments de vie" style={{ width: "100%", height: "200px", objectFit: "cover" }} />
           ) : (
-            <img src="https://images.unsplash.com/photo-1581579438747-1dc8d17bbce4?w=600&q=80" alt="Moments de vie" style={{ width: "100%", height: "200px", objectFit: "cover" }} />
+            <img src={process.env.PUBLIC_URL + '/mima-default.jpg'} alt="Moments de vie" style={{ width: "100%", height: "200px", objectFit: "cover" }} />
           )}
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 55%)" }} />
           <div style={{ position: "absolute", bottom: "10px", left: "12px", right: "12px", display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
