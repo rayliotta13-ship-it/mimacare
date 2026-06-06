@@ -41,16 +41,7 @@ const AppHeader = ({ onBell, title }) => (
         alt="MimaCare"
         style={{ height: "96px", width: "auto", objectFit: "contain", display: "block" }}
       />
-      <button
-        onClick={onBell}
-        style={{
-          position: "absolute", top: "0", right: "0",
-          width: "26px", height: "26px",
-          background: GL, borderRadius: "50%", border: "none",
-          fontSize: "11px", cursor: "pointer",
-          display: "flex", alignItems: "center", justifyContent: "center",
-        }}
-      >🔔</button>
+     
     </div>
 
     {/* Titre principal */}
