@@ -397,6 +397,7 @@ export const fetchGlycemieFromSupabase = async () => {
     .select("*")
     .order("created_at", { ascending: false })
     .limit(20);
+  console.log("Fetch glycemie:", data, error);
   if (error || !data || data.length === 0) return getGlycemiaHistory();
   return data.map(row => ({
     date: row.created_at,
