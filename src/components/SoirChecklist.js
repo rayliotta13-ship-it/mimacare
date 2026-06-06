@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { G, GL, GM, W, BG, T, T2, BD } from "../utils";
+import { G, W, BG, T, T2, BD } from "../utils";
 
 const ITEMS = [
   { id: "lumières", section: "Avant le repas", label: "Lumières détection mouvement" },
