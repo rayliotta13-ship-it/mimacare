@@ -97,7 +97,7 @@ useEffect(() => {
   if (data.presentSoir) setPresentSoir(data.presentSoir);
   setPresent({ prenom: data.prenom, heureArrivee: data.heureArrivee, heureDepart: data.heureDepart });
 });
-  storage.fetchGlycemieFromSupabase().then(setGlyHistory);
+  storage.fetchGlycemieFromSupabase().then(data => setGlyHistory([...data]));
   storage.fetchJournalFromSupabase().then(setJournalNotes);
 }, []);
 
