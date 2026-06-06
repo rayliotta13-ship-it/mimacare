@@ -146,7 +146,7 @@ useEffect(() => {
       if (data.presentSoir) setPresentSoir(data.presentSoir);
     });
     storage.fetchGlycemieFromSupabase().then(setGlyHistory);
-    storage.fetchJournalFromSupabase().then(setJournalNotes);
+    storage.fetchJournalFromSupabase().then(data => setJournalNotes([...data]));
   }, 30000);
   return () => clearInterval(interval);
 }, []);
