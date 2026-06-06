@@ -139,6 +139,18 @@ useEffect(() => {
   return () => sub.unsubscribe();
 }, []);
 
+useEffect(() => {
+  const interval = setInterval(() => {
+    storage.fetchPresencesFromSupabase().then(data => {
+      setPresent({ prenom: data.prenom, heureArrivee: data.heureArrivee, heureDepart: data.heureDepart });
+      if (data.presentSoir) setPresentSoir(data.presentSoir);
+    });
+    storage.fetchGlycemieFromSupabase().then(setGlyHistory);
+    storage.fetchJournalFromSupabase().then(setJournalNotes);
+  }, 30000);
+  return () => clearInterval(interval);
+}, []);
+
 
   const localDatetimeToISOString = (localDatetime) => {
     const [date, time] = (localDatetime || "").split("T");
