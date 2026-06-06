@@ -119,11 +119,19 @@ useEffect(() => {
   }, []);
 
 useEffect(() => {
-  const sub = storage.subscribeToPresences(() => {
+  const sub = storage.subscribeToPresences((payload) => {
+    if (payload?.action === "soir") {
+      setTimeout(() => {
+        storage.fetchPresencesFromSupabase().then(data => {
+          if (data.presentSoir) setPresentSoir(data.presentSoir);
+        });
+      }, 1000);
+      return;
+    }
     setTimeout(() => {
       storage.fetchPresencesFromSupabase().then(data => {
-  setPresent({ prenom: data.prenom, heureArrivee: data.heureArrivee, heureDepart: data.heureDepart });
-});
+        setPresent({ prenom: data.prenom, heureArrivee: data.heureArrivee, heureDepart: data.heureDepart });
+      });
     }, 1000);
   });
   return () => sub.unsubscribe();
