@@ -387,7 +387,7 @@ export const fetchPresencesFromSupabase = async () => {
     prenom: derniere?.qui || null,
     heureArrivee: derniere?.action === "arrivee" ? new Date(derniere.horodatage).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }) : null,
     heureDepart: derniere?.action === "depart" ? new Date(derniere.horodatage).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }) : null,
-    presentSoir: soir?.qui || getPresentTonight(),
+    presentSoir: soir?.qui || null,
   };
 };
 
