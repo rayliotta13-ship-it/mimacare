@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from "react";
 import { PresenceManager } from "./components/PresenceManager";
-import { MedicinesManager } from "./components/MedicinesManager";
 import { Modal } from "./components/Modal";
 import * as storage from "./data/storage";
 import { G, GL, GM, W, BG, T, T2, BD, RE, isFeminineName } from "./utils";
@@ -61,7 +60,7 @@ export default function MimaCare() {
   const [activeTab, setActiveTab] = useState("accueil");
   const [present, setPresent] = useState(() => storage.getPresences());
   const [presentSoir, setPresentSoir] = useState(() => storage.getPresentTonight());
-  const [medicines, setMedicines] = useState(() => storage.getMedicines());
+  const [medicines] = useState(() => storage.getMedicines());
   const [meds, setMeds] = useState(() => {
     const savedChecked = storage.getMedsChecked();
     return Object.fromEntries(
