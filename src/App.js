@@ -628,10 +628,10 @@ useEffect(() => {
         </div>
 
         <button onClick={() => validerTout(activeMoment)}
-          style={{ width: "100%", background: G, color: W, border: "none", borderRadius: "14px", padding: "14px", fontSize: "15px", fontWeight: "700", cursor: "pointer", marginBottom: "20px" }}>
+          style={{ width: "100%", background: G, color: W, border: "none", borderRadius: "14px", padding: "14px", fontSize: "15px", fontWeight: "700", cursor: "pointer", marginBottom: "10px" }}>
           ✓ Tout valider
-        </button> 
-<button onClick={() => {
+        </button>
+        <button onClick={() => {
           const name = prompt("Nom du médicament :");
           const role = prompt("Rôle :");
           const dose = prompt("Dose :");
@@ -640,8 +640,6 @@ useEffect(() => {
           style={{ width: "100%", background: W, color: G, border: `1.5px solid ${G}`, borderRadius: "14px", padding: "12px", fontSize: "14px", fontWeight: "700", cursor: "pointer", marginBottom: "20px" }}>
           + Ajouter un médicament
         </button>
-        
-        </div>
       </div>
     );
   };
