@@ -421,12 +421,6 @@ const deleteRdv = async (id) => {
   setRdvList(prev => prev.filter(r => r.id !== id));
 };
 
-const deleteRdv = (id) => {
-  const newList = rdvList.filter(r => r.id !== id);
-  setRdvList(newList);
-  localStorage.setItem("mimacare_rdv", JSON.stringify(newList));
-};
-
 const renderJournal = () => (
   <div style={{ padding: "14px 14px 0" }}>
     <div style={{ display: "flex", gap: "8px", marginBottom: "14px" }}>
