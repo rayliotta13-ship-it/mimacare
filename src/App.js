@@ -85,6 +85,17 @@ export default function MimaCare() {
   });
   const [accueilPhoto, setAccueilPhoto] = useState(() => storage.getAccueilPhoto());
 
+  useEffect(() => {
+  storage.fetchRdvFromSupabase().then(setRdvList);
+}, []);
+
+useEffect(() => {
+  const sub = storage.subscribeToRdv(() => {
+    storage.fetchRdvFromSupabase().then(setRdvList);
+  });
+  return () => sub.unsubscribe();
+}, []);
+
 useEffect(() => {
   storage.fetchPresencesFromSupabase().then(data => {
   if (data.presentSoir) setPresentSoir(data.presentSoir);
@@ -396,9 +407,7 @@ useEffect(() => {
 
   // ── JOURNAL ─────────────────────────────────────────────
   const [journalSection, setJournalSection] = useState("notes");
-const [rdvList, setRdvList] = useState(() => {
-  try { return JSON.parse(localStorage.getItem("mimacare_rdv") || "[]"); } catch { return []; }
-});
+const [rdvList, setRdvList] = useState([]);
 const [isRdvModalOpen, setRdvModalOpen] = useState(false);
 const [rdvDraft, setRdvDraft] = useState({ id: null, titre: "", date: "", heure: "", lieu: "", commentaire: "" });
 
@@ -407,18 +416,9 @@ const openRdvModal = (rdv = null) => {
   setRdvModalOpen(true);
 };
 
-const saveRdv = () => {
-  if (!rdvDraft.titre.trim() || !rdvDraft.date) return;
-  let newList;
-  if (rdvDraft.id) {
-    newList = rdvList.map(r => r.id === rdvDraft.id ? { ...rdvDraft } : r);
-  } else {
-    newList = [...rdvList, { ...rdvDraft, id: Date.now() }];
-  }
-  newList.sort((a, b) => a.date.localeCompare(b.date));
-  setRdvList(newList);
-  localStorage.setItem("mimacare_rdv", JSON.stringify(newList));
-  setRdvModalOpen(false);
+const deleteRdv = async (id) => {
+  await storage.deleteRdvSupabase(id);
+  setRdvList(prev => prev.filter(r => r.id !== id));
 };
 
 const deleteRdv = (id) => {

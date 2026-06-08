@@ -309,7 +309,7 @@ export const addNote = (texte, auteur, photos = []) => {
   saveNotes(notes);
   // Sync Supabase (texte uniquement, pas les photos)
   supabase.from("journal").insert([{
-    auteur: auteur || "Famille",
+    auteur: auteur && auteur.trim() !== "" ? auteur.trim() : "Famille",
     contenu: texte,
     date_note: now.toISOString(),
   }]).then(({ error }) => { if (error) console.warn("Supabase journal:", error.message); });
@@ -413,5 +413,57 @@ export const fetchJournalFromSupabase = async () => {
     texte: row.contenu,
     auteur: row.auteur,
     photos: [],
+  }));}));
+};
+
+export const fetchRdvFromSupabase = async () => {
+  const { data, error } = await supabase
+    .from("rendezVous")
+    .select("*")
+    .order("date_rdv", { ascending: true });
+  if (error || !data) return getRdvLocal();
+  return data.map(row => ({
+    id: row.id,
+    titre: row.titre || "",
+    date: row.date_rdv || "",
+    heure: row.heure || "",
+    lieu: row.lieu || "",
+    commentaire: row.commentaire || "",
   }));
+};
+
+export const getRdvLocal = () => {
+  try { return JSON.parse(localStorage.getItem("mimacare_rdv") || "[]"); } catch { return []; }
+};
+
+export const addRdvSupabase = async (rdv) => {
+  const { error } = await supabase.from("rendezVous").insert([{
+    titre: rdv.titre,
+    date_rdv: rdv.date,
+    heure: rdv.heure,
+    lieu: rdv.lieu,
+    commentaire: rdv.commentaire,
+  }]);
+  if (error) console.warn("Supabase RDV:", error.message);
+};
+
+export const deleteRdvSupabase = async (id) => {
+  await supabase.from("rendezVous").delete().eq("id", id);
+};
+
+export const updateRdvSupabase = async (id, rdv) => {
+  await supabase.from("rendezVous").update({
+    titre: rdv.titre,
+    date_rdv: rdv.date,
+    heure: rdv.heure,
+    lieu: rdv.lieu,
+    commentaire: rdv.commentaire,
+  }).eq("id", id);
+};
+
+export const subscribeToRdv = (callback) => {
+  return supabase
+    .channel("rdv-channel")
+    .on("postgres_changes", { event: "*", schema: "public", table: "rendezVous" }, callback)
+    .subscribe();
 };
