@@ -221,11 +221,6 @@ useEffect(() => {
     }
   };
 
-  const deleteJournalNote = (id) => {
-    if (!window.confirm("Supprimer cette note ?")) return;
-    storage.deleteNote(id);
-    setJournalNotes(storage.getNotes());
-  };
 
   const removeJournalPhoto = (photoId) => {
     setNoteDraft(d => ({ ...d, photos: (d.photos || []).filter(photo => photo.id !== photoId) }));
