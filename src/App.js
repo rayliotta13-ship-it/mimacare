@@ -617,7 +617,7 @@ useEffect(() => {
           <div style={{ fontSize: "13px", fontWeight: "700", color: T2, textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: "12px" }}>
             Gérer les médicaments
           </div>
-          <MedicinesManager moment={activeMoment} onSave={() => {
+          <MedicinesManager key={activeMoment} moment={activeMoment} onSave={() => {
             const freshMeds = storage.getMedicines();
             const savedChecked = storage.getMedsChecked();
             setMedicines(freshMeds);
