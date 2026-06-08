@@ -402,107 +402,149 @@ useEffect(() => {
   );
 
   // ── JOURNAL ─────────────────────────────────────────────
-  const renderJournal = () => (
-    <div style={{ padding: "14px 14px 0" }}>
-      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "12px" }}>
-        <button onClick={() => openJournalModal()}
-          style={{ width: "34px", height: "34px", background: G, color: W, border: "none", borderRadius: "50%", fontSize: "18px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
-          +
-        </button>
-      </div>
+  const [journalSection, setJournalSection] = useState("notes");
+const [rdvList, setRdvList] = useState(() => {
+  try { return JSON.parse(localStorage.getItem("mimacare_rdv") || "[]"); } catch { return []; }
+});
+const [isRdvModalOpen, setRdvModalOpen] = useState(false);
+const [rdvDraft, setRdvDraft] = useState({ id: null, titre: "", date: "", heure: "", lieu: "", commentaire: "" });
 
-      <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "20px" }}>
-        {journalNotes.length === 0 ? (
-          <div style={{ background: W, borderRadius: "18px", padding: "20px", textAlign: "center", color: T2 }}>Aucune note pour l'instant. Ajoutez une première note.</div>
-        ) : journalNotes.map(note => (
-          <div key={note.id} style={{ background: W, borderRadius: "16px", padding: "14px", border: `1px solid ${BD}` }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "10px", marginBottom: "12px" }}>
-              <div>
-                <div style={{ fontSize: "13px", fontWeight: "700", color: G }}>{note.date} {note.time || ""}</div>
-                {note.auteur && <div style={{ fontSize: "11px", color: T2, marginTop: "2px" }}>{note.auteur}</div>}
+const openRdvModal = (rdv = null) => {
+  setRdvDraft(rdv ? { ...rdv } : { id: null, titre: "", date: "", heure: "", lieu: "", commentaire: "" });
+  setRdvModalOpen(true);
+};
+
+const saveRdv = () => {
+  if (!rdvDraft.titre.trim() || !rdvDraft.date) return;
+  let newList;
+  if (rdvDraft.id) {
+    newList = rdvList.map(r => r.id === rdvDraft.id ? { ...rdvDraft } : r);
+  } else {
+    newList = [...rdvList, { ...rdvDraft, id: Date.now() }];
+  }
+  newList.sort((a, b) => a.date.localeCompare(b.date));
+  setRdvList(newList);
+  localStorage.setItem("mimacare_rdv", JSON.stringify(newList));
+  setRdvModalOpen(false);
+};
+
+const deleteRdv = (id) => {
+  const newList = rdvList.filter(r => r.id !== id);
+  setRdvList(newList);
+  localStorage.setItem("mimacare_rdv", JSON.stringify(newList));
+};
+
+const renderJournal = () => (
+  <div style={{ padding: "14px 14px 0" }}>
+    <div style={{ display: "flex", gap: "8px", marginBottom: "14px" }}>
+      <button onClick={() => setJournalSection("notes")}
+        style={{ flex: 1, padding: "10px", borderRadius: "12px", background: journalSection === "notes" ? G : W, color: journalSection === "notes" ? W : T, border: "none", fontSize: "13px", fontWeight: "700", cursor: "pointer" }}>
+        Notes
+      </button>
+      <button onClick={() => setJournalSection("rdv")}
+        style={{ flex: 1, padding: "10px", borderRadius: "12px", background: journalSection === "rdv" ? G : W, color: journalSection === "rdv" ? W : T, border: "none", fontSize: "13px", fontWeight: "700", cursor: "pointer" }}>
+        Rendez-vous
+      </button>
+    </div>
+
+    {journalSection === "notes" && (
+      <div>
+        <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "12px" }}>
+          <button onClick={() => openJournalModal()}
+            style={{ width: "34px", height: "34px", background: G, color: W, border: "none", borderRadius: "50%", fontSize: "18px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            +
+          </button>
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "20px" }}>
+          {journalNotes.length === 0 ? (
+            <div style={{ background: W, borderRadius: "18px", padding: "20px", textAlign: "center", color: T2 }}>Aucune note. Appuyez sur + pour ajouter.</div>
+          ) : journalNotes.map(note => (
+            <div key={note.id} style={{ background: W, borderRadius: "16px", padding: "14px", border: `1px solid ${BD}` }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "10px", marginBottom: "8px" }}>
+                <div>
+                  <div style={{ fontSize: "13px", fontWeight: "700", color: G }}>{note.date} {note.time || ""}</div>
+                  {note.auteur && <div style={{ fontSize: "11px", color: T2 }}>{note.auteur}</div>}
+                </div>
+                <div style={{ display: "flex", gap: "8px" }}>
+                  <button onClick={() => openJournalModal(note)}
+                    style={{ width: "32px", height: "32px", background: GL, border: "none", borderRadius: "10px", cursor: "pointer", fontSize: "14px" }}>✏️</button>
+                  <button onClick={() => deleteJournalNote(note.id)}
+                    style={{ width: "32px", height: "32px", background: "rgba(239,68,68,0.1)", border: "none", borderRadius: "10px", cursor: "pointer", fontSize: "14px" }}>🗑️</button>
+                </div>
               </div>
-              <div style={{ display: "flex", gap: "8px" }}>
-                <button onClick={() => openJournalModal(note)}
-                  style={{ width: "36px", height: "36px", background: GL, border: "none", borderRadius: "12px", cursor: "pointer", fontSize: "16px" }}>
-                  ✏️
-                </button>
-                <button onClick={() => deleteJournalNote(note.id)}
-                  style={{ width: "36px", height: "36px", background: "rgba(239, 68, 68, 0.1)", border: "none", borderRadius: "12px", cursor: "pointer", color: RE, fontSize: "16px" }}>
-                  🗑️
-                </button>
-              </div>
+              <div style={{ fontSize: "14px", color: T, lineHeight: "1.6", whiteSpace: "pre-wrap" }}>{note.texte}</div>
+              {note.photos?.length > 0 && (
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "8px", marginTop: "10px" }}>
+                  {note.photos.map(photo => (
+                    <img key={photo.id} src={photo.src} alt="" style={{ width: "100%", height: "120px", objectFit: "cover", borderRadius: "12px" }} />
+                  ))}
+                </div>
+              )}
             </div>
-            <div style={{ fontSize: "14px", color: T, lineHeight: "1.6", whiteSpace: "pre-wrap", marginBottom: note.photos?.length ? "12px" : "0" }}>{note.texte}</div>
-            {note.photos?.length > 0 && (
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "8px" }}>
-                {note.photos.map(photo => (
-                  <img key={photo.id} src={photo.src} alt={photo.name} style={{ width: "100%", height: "120px", objectFit: "cover", borderRadius: "16px" }} />
+          ))}
+        </div>
+        <Modal isOpen={isJournalModalOpen} title={noteDraft.id ? "Modifier la note" : "Ajouter une note"} onClose={closeJournalModal} primaryAction={saveJournalNote} primaryText={noteDraft.id ? "Modifier" : "Enregistrer"}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+            <input type="text" value={noteDraft.auteur} onChange={e => setNoteDraft(d => ({ ...d, auteur: e.target.value }))} placeholder="Auteur (optionnel)" style={{ width: "100%", padding: "11px 14px", border: `1px solid ${BD}`, borderRadius: "12px", fontSize: "15px", boxSizing: "border-box", outline: "none", fontFamily: "inherit" }} />
+            <textarea value={noteDraft.texte} onChange={e => setNoteDraft(d => ({ ...d, texte: e.target.value }))} placeholder="Écris une note importante sur Mima..." style={{ width: "100%", minHeight: "120px", border: `1px solid ${BD}`, borderRadius: "14px", padding: "12px", fontSize: "15px", color: T, resize: "vertical", outline: "none", fontFamily: "inherit", boxSizing: "border-box" }} />
+            <button type="button" onClick={() => notePhotoInputRef.current?.click()} style={{ padding: "12px 14px", background: GL, color: G, border: `1px solid ${G}`, borderRadius: "14px", fontSize: "14px", fontWeight: "700", cursor: "pointer" }}>+ Ajouter des photos</button>
+            <input ref={notePhotoInputRef} type="file" accept="image/*" multiple style={{ display: "none" }} onChange={handleJournalPhotoUpload} />
+            {noteDraft.photos?.length > 0 && (
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "8px" }}>
+                {noteDraft.photos.map(photo => (
+                  <div key={photo.id} style={{ position: "relative" }}>
+                    <img src={photo.src} alt="" style={{ width: "100%", height: "90px", objectFit: "cover", borderRadius: "12px" }} />
+                    <button type="button" onClick={() => removeJournalPhoto(photo.id)} style={{ position: "absolute", top: "6px", right: "6px", width: "24px", height: "24px", borderRadius: "8px", background: "rgba(255,255,255,0.9)", border: "none", cursor: "pointer", fontSize: "12px" }}>✕</button>
+                  </div>
                 ))}
               </div>
             )}
           </div>
-        ))}
+        </Modal>
       </div>
+    )}
 
-      <Modal
-        isOpen={isJournalModalOpen}
-        title={noteDraft.id ? "Modifier la note" : "Ajouter une note"}
-        onClose={closeJournalModal}
-        primaryAction={saveJournalNote}
-        primaryText={noteDraft.id ? "Modifier" : "Enregistrer"}
-      >
-        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-          <input
-            type="text"
-            value={noteDraft.auteur}
-            onChange={(e) => setNoteDraft(d => ({ ...d, auteur: e.target.value }))}
-            placeholder="Auteur (optionnel)"
-            style={{ width: "100%", padding: "11px 14px", border: `1px solid ${BD}`, borderRadius: "12px", fontSize: "15px", boxSizing: "border-box", outline: "none", fontFamily: "inherit" }}
-          />
-          <textarea
-            value={noteDraft.texte}
-            onChange={(e) => setNoteDraft(d => ({ ...d, texte: e.target.value }))}
-            placeholder="Écris une note importante sur Mima..."
-            style={{ width: "100%", minHeight: "120px", border: `1px solid ${BD}`, borderRadius: "14px", padding: "12px", fontSize: "15px", color: T, resize: "vertical", outline: "none", fontFamily: "inherit", boxSizing: "border-box" }}
-          />
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "10px" }}>
-            <button
-              type="button"
-              onClick={() => notePhotoInputRef.current?.click()}
-              style={{ flex: 1, padding: "12px 14px", background: GL, color: G, border: `1px solid ${G}`, borderRadius: "14px", fontSize: "14px", fontWeight: "700", cursor: "pointer" }}
-            >
-              + Ajouter des photos
-            </button>
-            <span style={{ fontSize: "11px", color: T2 }}>{noteDraft.photos?.length || 0} photo(s)</span>
-          </div>
-          <input
-            ref={notePhotoInputRef}
-            type="file"
-            accept="image/*"
-            multiple
-            style={{ display: "none" }}
-            onChange={handleJournalPhotoUpload}
-          />
-          {noteDraft.photos?.length > 0 && (
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: "8px" }}>
-              {noteDraft.photos.map(photo => (
-                <div key={photo.id} style={{ position: "relative" }}>
-                  <img src={photo.src} alt={photo.name} style={{ width: "100%", height: "90px", objectFit: "cover", borderRadius: "14px" }} />
-                  <button
-                    type="button"
-                    onClick={() => removeJournalPhoto(photo.id)}
-                    style={{ position: "absolute", top: "8px", right: "8px", width: "28px", height: "28px", borderRadius: "10px", background: "rgba(255,255,255,0.9)", border: "none", cursor: "pointer", fontSize: "14px" }}
-                  >
-                    ✕
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
+    {journalSection === "rdv" && (
+      <div>
+        <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "12px" }}>
+          <button onClick={() => openRdvModal()}
+            style={{ width: "34px", height: "34px", background: G, color: W, border: "none", borderRadius: "50%", fontSize: "18px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            +
+          </button>
         </div>
-      </Modal>
-    </div>
-  );
+        <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "20px" }}>
+          {rdvList.length === 0 ? (
+            <div style={{ background: W, borderRadius: "16px", padding: "20px", textAlign: "center", color: T2 }}>Aucun rendez-vous. Appuyez sur + pour ajouter.</div>
+          ) : rdvList.map(rdv => (
+            <div key={rdv.id} style={{ background: W, borderRadius: "16px", padding: "14px", border: `1px solid ${BD}` }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: "15px", fontWeight: "800", color: T, marginBottom: "4px" }}>{rdv.titre}</div>
+                  <div style={{ fontSize: "13px", color: G, fontWeight: "600" }}>📅 {rdv.date ? new Date(rdv.date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" }) : ""} {rdv.heure && `· ${rdv.heure}`}</div>
+                  {rdv.lieu && <div style={{ fontSize: "12px", color: T2, marginTop: "2px" }}>📍 {rdv.lieu}</div>}
+                  {rdv.commentaire && <div style={{ fontSize: "12px", color: T2, marginTop: "4px", fontStyle: "italic" }}>{rdv.commentaire}</div>}
+                </div>
+                <div style={{ display: "flex", gap: "6px" }}>
+                  <button onClick={() => openRdvModal(rdv)} style={{ width: "32px", height: "32px", background: GL, border: "none", borderRadius: "10px", cursor: "pointer", fontSize: "14px" }}>✏️</button>
+                  <button onClick={() => deleteRdv(rdv.id)} style={{ width: "32px", height: "32px", background: "rgba(239,68,68,0.1)", border: "none", borderRadius: "10px", cursor: "pointer", fontSize: "14px" }}>🗑️</button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <Modal isOpen={isRdvModalOpen} title={rdvDraft.id ? "Modifier le RDV" : "Ajouter un rendez-vous"} onClose={() => setRdvModalOpen(false)} primaryAction={saveRdv} primaryText={rdvDraft.id ? "Modifier" : "Enregistrer"}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+            <input type="text" value={rdvDraft.titre} onChange={e => setRdvDraft(d => ({ ...d, titre: e.target.value }))} placeholder="Titre (ex: Cardiologue)" style={{ width: "100%", padding: "10px", border: `1px solid ${BD}`, borderRadius: "10px", fontSize: "15px", boxSizing: "border-box", outline: "none", fontFamily: "inherit" }} />
+            <input type="date" value={rdvDraft.date} onChange={e => setRdvDraft(d => ({ ...d, date: e.target.value }))} style={{ width: "100%", padding: "10px", border: `1px solid ${BD}`, borderRadius: "10px", fontSize: "15px", boxSizing: "border-box" }} />
+            <input type="time" value={rdvDraft.heure} onChange={e => setRdvDraft(d => ({ ...d, heure: e.target.value }))} style={{ width: "100%", padding: "10px", border: `1px solid ${BD}`, borderRadius: "10px", fontSize: "15px", boxSizing: "border-box" }} />
+            <input type="text" value={rdvDraft.lieu} onChange={e => setRdvDraft(d => ({ ...d, lieu: e.target.value }))} placeholder="Lieu (ex: Clinique Saint-Jean)" style={{ width: "100%", padding: "10px", border: `1px solid ${BD}`, borderRadius: "10px", fontSize: "15px", boxSizing: "border-box", outline: "none", fontFamily: "inherit" }} />
+            <textarea value={rdvDraft.commentaire} onChange={e => setRdvDraft(d => ({ ...d, commentaire: e.target.value }))} placeholder="Commentaire (optionnel)" style={{ width: "100%", minHeight: "80px", border: `1px solid ${BD}`, borderRadius: "10px", padding: "10px", fontSize: "14px", resize: "none", outline: "none", fontFamily: "inherit", boxSizing: "border-box" }} />
+          </div>
+        </Modal>
+      </div>
+    )}
+  </div>
+);
 
   // ── GLYCÉMIE ─────────────────────────────────────────────
   const renderGlycemie = () => {
