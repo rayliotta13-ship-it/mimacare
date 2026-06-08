@@ -478,7 +478,13 @@ const renderJournal = () => (
         </div>
         <Modal isOpen={isJournalModalOpen} title={noteDraft.id ? "Modifier la note" : "Ajouter une note"} onClose={closeJournalModal} primaryAction={saveJournalNote} primaryText={noteDraft.id ? "Modifier" : "Enregistrer"}>
           <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-            <input type="text" value={noteDraft.auteur} onChange={e => setNoteDraft(d => ({ ...d, auteur: e.target.value }))} placeholder="Auteur (optionnel)" style={{ width: "100%", padding: "11px 14px", border: `1px solid ${BD}`, borderRadius: "12px", fontSize: "15px", boxSizing: "border-box", outline: "none", fontFamily: "inherit" }} />
+            <select value={noteDraft.auteur} onChange={e => setNoteDraft(d => ({ ...d, auteur: e.target.value }))} style={{ width: "100%", padding: "11px 14px", border: `1px solid ${BD}`, borderRadius: "12px", fontSize: "15px", boxSizing: "border-box", outline: "none", fontFamily: "inherit", background: W }}>
+  <option value="">Choisir un prénom</option>
+  <option value="Choukri">Choukri</option>
+  <option value="Fawzi">Fawzi</option>
+  <option value="Djamila">Djamila</option>
+  <option value="Fouad">Fouad</option>
+</select>
             <textarea value={noteDraft.texte} onChange={e => setNoteDraft(d => ({ ...d, texte: e.target.value }))} placeholder="Écris une note importante sur Mima..." style={{ width: "100%", minHeight: "120px", border: `1px solid ${BD}`, borderRadius: "14px", padding: "12px", fontSize: "15px", color: T, resize: "vertical", outline: "none", fontFamily: "inherit", boxSizing: "border-box" }} />
             <button type="button" onClick={() => notePhotoInputRef.current?.click()} style={{ padding: "12px 14px", background: GL, color: G, border: `1px solid ${G}`, borderRadius: "14px", fontSize: "14px", fontWeight: "700", cursor: "pointer" }}>+ Ajouter des photos</button>
             <input ref={notePhotoInputRef} type="file" accept="image/*" multiple style={{ display: "none" }} onChange={handleJournalPhotoUpload} />
