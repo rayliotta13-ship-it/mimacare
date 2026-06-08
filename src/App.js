@@ -414,6 +414,16 @@ const [rdvDraft, setRdvDraft] = useState({ id: null, titre: "", date: "", heure:
 const openRdvModal = (rdv = null) => {
   setRdvDraft(rdv ? { ...rdv } : { id: null, titre: "", date: "", heure: "", lieu: "", commentaire: "" });
   setRdvModalOpen(true);
+}; 
+const saveRdv = async () => {
+  if (!rdvDraft.titre.trim() || !rdvDraft.date) return;
+  if (rdvDraft.id) {
+    await storage.updateRdvSupabase(rdvDraft.id, rdvDraft);
+  } else {
+    await storage.addRdvSupabase(rdvDraft);
+  }
+  storage.fetchRdvFromSupabase().then(setRdvList);
+  setRdvModalOpen(false);
 };
 
 const deleteRdv = async (id) => {

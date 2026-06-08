@@ -413,7 +413,7 @@ export const fetchJournalFromSupabase = async () => {
     texte: row.contenu,
     auteur: row.auteur,
     photos: [],
-  }));}));
+ }));
 };
 
 export const fetchRdvFromSupabase = async () => {
