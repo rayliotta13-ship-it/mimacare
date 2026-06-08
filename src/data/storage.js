@@ -291,14 +291,8 @@ export const getNotes = () => {
 };
 
 export const initializeNotes = () => {
-  const defaultNotes = [
-    { id: 1, date: "29 mai", time: "20:10", texte: "Mima a bien mangé aujourd'hui.", auteur: "Djamila", photos: [] },
-    { id: 2, date: "28 mai", time: "18:35", texte: "Visite chez le cardiologue. Tout s'est bien passé.", auteur: "Fouad", photos: [] },
-    { id: 3, date: "27 mai", time: "16:50", texte: "Noam est venu lui rendre visite. Mima était très heureuse.", auteur: "Choukri", photos: [] },
-    { id: 4, date: "26 mai", time: "14:20", texte: "Petite fatigue cet après-midi.", auteur: "Fawzi", photos: [] },
-  ];
-  saveNotes(defaultNotes);
-  return defaultNotes;
+  saveNotes([]);
+  return [];
 };
 
 export const saveNotes = (notes) => {

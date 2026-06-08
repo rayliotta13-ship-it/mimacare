@@ -7,10 +7,10 @@ import { G, GL, GM, W, BG, T, T2, BD, RE, isFeminineName } from "./utils";
 import { SoirChecklist } from "./components/SoirChecklist";
 
 const MSGS = [
-  "Tout est à jour aujourd'hui.",
-  "Mima a passé une belle journée.",
-  "Merci à toute la famille pour sa présence.",
-  "Les médicaments et la glycémie sont renseignés.",
+  "Le Paradis se trouve sous les pieds des mères. — Prophète Muhammad",
+  "Le coeur d'une mère est un refuge qu'Allah a placé sur terre.",
+  "Prendre soin de sa mère âgée est un honneur avant d'être un devoir.",
+  "Même adulte, un enfant reste le souci et la prière de sa mère.",
 ];
 
 const TABS = [
@@ -75,7 +75,7 @@ export default function MimaCare() {
   const [journalNotes, setJournalNotes] = useState(() => storage.getNotes());
   const [isJournalModalOpen, setJournalModalOpen] = useState(false);
   const [noteDraft, setNoteDraft] = useState({ id: null, texte: "", auteur: "", photos: [] });
-  const [msg] = useState(MSGS[Math.floor(Math.random() * MSGS.length)]);
+  const [msg] = useState(MSGS[new Date().getDay() % MSGS.length]);
   const notePhotoInputRef = useRef(null);
   const [glyHistory, setGlyHistory] = useState(() => storage.getGlycemiaHistory());
   const [isGlyModalOpen, setGlyModalOpen] = useState(false);
@@ -594,15 +594,34 @@ useEffect(() => {
           </div>
           {currentMeds.map((med, i, arr) => (
             med.enabled !== false && (
-              <div key={med.id} onClick={() => toggleMed(activeMoment, med.id)}
-                style={{ display: "flex", alignItems: "center", gap: "12px", padding: "13px 14px", borderBottom: i < arr.length - 1 ? `1px solid ${BD}` : "none", cursor: "pointer", background: med.checked ? "#FAFFFE" : W }}>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: "15px", fontWeight: "600", color: med.checked ? T2 : T, textDecoration: med.checked ? "line-through" : "none" }}>{med.name}</div>
-                  <div style={{ fontSize: "11px", color: med.alert ? RE : T2, marginTop: "1px" }}>{med.role} · {med.dose}</div>
-                </div>
-                <div style={{ width: "24px", height: "24px", borderRadius: "6px", background: med.checked ? G : W, border: `2px solid ${med.checked ? G : med.alert ? RE : BD}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+              <div key={med.id}
+                style={{ display: "flex", alignItems: "center", gap: "10px", padding: "13px 14px", borderBottom: i < arr.length - 1 ? `1px solid ${BD}` : "none", background: med.checked ? "#FAFFFE" : W }}>
+                <div onClick={() => toggleMed(activeMoment, med.id)}
+                  style={{ width: "24px", height: "24px", borderRadius: "6px", background: med.checked ? G : W, border: `2px solid ${med.checked ? G : med.alert ? RE : BD}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, cursor: "pointer" }}>
                   {med.checked && <span style={{ color: W, fontSize: "13px", fontWeight: "900" }}>✓</span>}
                 </div>
+                <div style={{ flex: 1 }} onClick={() => toggleMed(activeMoment, med.id)}>
+                  <div style={{ fontSize: "14px", fontWeight: "600", color: med.checked ? T2 : T, textDecoration: med.checked ? "line-through" : "none" }}>{med.name}</div>
+                  <div style={{ fontSize: "11px", color: med.alert ? RE : T2, marginTop: "1px" }}>{med.role} · {med.dose}</div>
+                </div>
+                <button onClick={() => {
+                  const name = prompt("Nom :", med.name);
+                  const role = prompt("Rôle :", med.role);
+                  const dose = prompt("Dose :", med.dose);
+                  if (name) { storage.updateMedicine(activeMoment, med.id, { name, role, dose }); const freshMeds = storage.getMedicines(); const savedChecked = storage.getMedsChecked(); setMeds(Object.fromEntries(Object.entries(freshMeds).map(([m, list]) => [m, list.map(x => ({ ...x, checked: savedChecked?.[m]?.[x.id] ?? false }))]))); }
+                }}
+                  style={{ width: "30px", height: "30px", background: GL, border: "none", borderRadius: "8px", fontSize: "14px", cursor: "pointer", flexShrink: 0 }}>
+                  ✏️
+                </button>
+                <button onClick={() => {
+                  storage.deleteMedicine(activeMoment, med.id);
+                  const freshMeds = storage.getMedicines();
+                  const savedChecked = storage.getMedsChecked();
+                  setMeds(Object.fromEntries(Object.entries(freshMeds).map(([m, list]) => [m, list.map(x => ({ ...x, checked: savedChecked?.[m]?.[x.id] ?? false }))])));
+                }}
+                  style={{ width: "30px", height: "30px", background: "rgba(239,68,68,0.1)", border: "none", borderRadius: "8px", fontSize: "14px", cursor: "pointer", flexShrink: 0 }}>
+                  🗑️
+                </button>
               </div>
             )
           ))}
@@ -611,21 +630,17 @@ useEffect(() => {
         <button onClick={() => validerTout(activeMoment)}
           style={{ width: "100%", background: G, color: W, border: "none", borderRadius: "14px", padding: "14px", fontSize: "15px", fontWeight: "700", cursor: "pointer", marginBottom: "20px" }}>
           ✓ Tout valider
+        </button> 
+<button onClick={() => {
+          const name = prompt("Nom du médicament :");
+          const role = prompt("Rôle :");
+          const dose = prompt("Dose :");
+          if (name) { storage.addMedicine(activeMoment, { name, role, dose }); const freshMeds = storage.getMedicines(); const savedChecked = storage.getMedsChecked(); setMeds(Object.fromEntries(Object.entries(freshMeds).map(([m, list]) => [m, list.map(x => ({ ...x, checked: savedChecked?.[m]?.[x.id] ?? false }))]))); }
+        }}
+          style={{ width: "100%", background: W, color: G, border: `1.5px solid ${G}`, borderRadius: "14px", padding: "12px", fontSize: "14px", fontWeight: "700", cursor: "pointer", marginBottom: "20px" }}>
+          + Ajouter un médicament
         </button>
-
-        <div style={{ marginBottom: "20px" }}>
-          <div style={{ fontSize: "13px", fontWeight: "700", color: T2, textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: "12px" }}>
-            Gérer les médicaments
-          </div>
-          <MedicinesManager key={activeMoment} moment={activeMoment} onSave={() => {
-            const freshMeds = storage.getMedicines();
-            const savedChecked = storage.getMedsChecked();
-            setMedicines(freshMeds);
-            setMeds(Object.fromEntries(Object.entries(freshMeds).map(([m, list]) => [
-              m,
-              list.map(x => ({ ...x, checked: savedChecked?.[m]?.[x.id] ?? false })),
-            ])));
-          }} />
+        
         </div>
       </div>
     );
