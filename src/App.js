@@ -106,12 +106,10 @@ useEffect(() => {
   return () => sub.unsubscribe();
 }, []);
 
-  useEffect(() => {
-    const sub = storage.subscribeToJournal((newRow) => {
-      setJournalNotes(storage.getNotes());
-    });
-    return () => sub.unsubscribe();
-  }, []);
+  const deleteJournalNote = (id) => {
+  storage.deleteNote(id);
+  setJournalNotes(prev => prev.filter(note => note.id !== id));
+};
 
 useEffect(() => {
   const sub = storage.subscribeToPresences((payload) => {
@@ -182,7 +180,7 @@ useEffect(() => {
     if (note) {
       setNoteDraft({ ...note, photos: note.photos || [] });
     } else {
-      setNoteDraft({ id: null, texte: "", auteur: "", photos: [] });
+      setNoteDraft({ id: null, texte: "", auteur: present.prenom || "", photos: [] });
     }
     setJournalModalOpen(true);
   };
