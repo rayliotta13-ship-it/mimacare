@@ -334,10 +334,12 @@ useEffect(() => {
     present.heureArrivee && <div>Dernier passage : {present.prenom} à {present.heureArrivee}</div>
   )}
 </div>
-          <div style={{ marginTop: "6px", display: "inline-flex", alignItems: "center", gap: "4px", background: present.heureDepart ? BG : GL, borderRadius: "12px", padding: "3px 8px" }}>
-            <div style={{ width: "5px", height: "5px", borderRadius: "50%", background: present.heureDepart ? T2 : G }} />
-            <span style={{ fontSize: "11px", fontWeight: "700", color: present.heureDepart ? T2 : G }}>{getPresenceStatusLabel(present)}</span>
-          </div>
+          {(present.prenom && present.prenom !== "Personne") && (
+            <div style={{ marginTop: "6px", display: "inline-flex", alignItems: "center", gap: "4px", background: present.heureDepart ? BG : GL, borderRadius: "12px", padding: "3px 8px" }}>
+              <div style={{ width: "5px", height: "5px", borderRadius: "50%", background: present.heureDepart ? T2 : G }} />
+              <span style={{ fontSize: "11px", fontWeight: "700", color: present.heureDepart ? T2 : G }}>{getPresenceStatusLabel(present)}</span>
+            </div>
+          )}
         </div>
         <div style={{ flex: 1, background: presentSoir ? W : GL, borderRadius: "16px", padding: "12px", border: `1px solid ${presentSoir ? BD : GM}` }}>
           <Lbl>Ce soir 🌙</Lbl>
