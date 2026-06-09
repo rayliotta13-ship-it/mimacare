@@ -322,10 +322,10 @@ useEffect(() => {
         <div style={{ flex: 1, background: W, borderRadius: "16px", padding: "12px", border: `1px solid ${BD}` }}>
           <Lbl>Présence</Lbl>
           <div style={{ fontSize: "16px", fontWeight: "600", color: present.prenom ? (present.heureDepart ? T2 : G) : T2 }}>
-  {present.prenom || "Mima est seule pour l'instant"}
+  {(present.prenom && present.prenom !== "Personne") ? present.prenom : "Mima est seule pour l'instant"}
 </div>
 <div style={{ fontSize: "11px", color: T2, lineHeight: "1.6" }}>
-  {present.prenom ? (
+  {(present.prenom && present.prenom !== "Personne") ? (
     <>
       {present.heureArrivee && <div>Arrivée : {present.heureArrivee}</div>}
       {present.heureDepart && <div>Départ : {present.heureDepart}</div>}
