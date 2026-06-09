@@ -321,11 +321,19 @@ useEffect(() => {
       <div style={{ display: "flex", gap: "10px", marginBottom: "10px" }}>
         <div style={{ flex: 1, background: W, borderRadius: "16px", padding: "12px", border: `1px solid ${BD}` }}>
           <Lbl>Présence</Lbl>
-          <div style={{ fontSize: "16px", fontWeight: "600", color: present.heureDepart ? T2 : G }}>{present.prenom || "Aucune personne"}</div>
-          <div style={{ fontSize: "11px", color: T2, lineHeight: "1.6" }}>
-            {present.heureArrivee && <div>Arrivée : {present.heureArrivee}</div>}
-            {present.heureDepart && <div>Départ : {present.heureDepart}</div>}
-          </div>
+          <div style={{ fontSize: "16px", fontWeight: "600", color: present.prenom ? (present.heureDepart ? T2 : G) : T2 }}>
+  {present.prenom || "Mima est seule pour l'instant"}
+</div>
+<div style={{ fontSize: "11px", color: T2, lineHeight: "1.6" }}>
+  {present.prenom ? (
+    <>
+      {present.heureArrivee && <div>Arrivée : {present.heureArrivee}</div>}
+      {present.heureDepart && <div>Départ : {present.heureDepart}</div>}
+    </>
+  ) : (
+    present.heureArrivee && <div>Dernier passage : {present.prenom} à {present.heureArrivee}</div>
+  )}
+</div>
           <div style={{ marginTop: "6px", display: "inline-flex", alignItems: "center", gap: "4px", background: present.heureDepart ? BG : GL, borderRadius: "12px", padding: "3px 8px" }}>
             <div style={{ width: "5px", height: "5px", borderRadius: "50%", background: present.heureDepart ? T2 : G }} />
             <span style={{ fontSize: "11px", fontWeight: "700", color: present.heureDepart ? T2 : G }}>{getPresenceStatusLabel(present)}</span>
