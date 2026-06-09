@@ -331,7 +331,7 @@ useEffect(() => {
       {present.heureDepart && <div>Départ : {present.heureDepart}</div>}
     </>
   ) : (
-    present.heureArrivee && <div>Dernier passage : {present.prenom} à {present.heureArrivee}</div>
+    present.heureArrivee && <div>Dernière présence enregistrée à {present.heureArrivee}</div>
   )}
 </div>
           {(present.prenom && present.prenom !== "Personne") && (
